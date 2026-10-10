@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Outer Shield Contour -->
+  <path d="M24 3L6 10.5V23C6 34.2 13.7 44.5 24 47C34.3 44.5 42 34.2 42 23V10.5L24 3Z" fill="#123C2A"/>
+  <!-- Inner Gold/Earth Rim -->
+  <path d="M24 5.5L8.5 12V23C8.5 32.8 15.1 41.8 24 44.2C32.9 41.8 39.5 32.8 39.5 23V12L24 5.5Z" stroke="#8A6A3D" stroke-width="1.2" fill="#1B5E3C"/>
+  <!-- Telemetry Beacon Pulse -->
+  <path d="M20 9C21.2 8.3 22.6 8 24 8C25.4 8 26.8 8.3 28 9" stroke="#F7F5EE" stroke-width="1.2" stroke-linecap="round"/>
+  <circle cx="24" cy="11.5" r="1.5" fill="#F7F5EE"/>
+  <!-- Crescent Bovine Horns -->
+  <path d="M14 17C15.5 13 18.5 12 21 15C19 16.5 17 19.5 16.5 22.5" stroke="#F7F5EE" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <path d="M34 17C32.5 13 29.5 12 27 15C29 16.5 31 19.5 31.5 22.5" stroke="#F7F5EE" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- Head Silhouette -->
+  <path d="M18.5 20C18.5 18 20.5 16.5 24 16.5C27.5 16.5 29.5 18 29.5 20C29.5 23 28 27.5 26.5 30C25.5 31.5 24.8 32 24 32C23.2 32 22.5 31.5 21.5 30C20 27.5 18.5 23 18.5 20Z" fill="#F7F5EE"/>
+  <path d="M21 28.5C21.8 28.2 22.8 28 24 28C25.2 28 26.2 28.2 27 28.5C26.5 30.2 25.5 31.2 24 31.2C22.5 31.2 21.5 30.2 21 28.5Z" fill="#123C2A"/>
+  <!-- Twin Laurel Leaves at Base -->
+  <path d="M17 38.5C19 35 22 34 24 35.5C22 36.5 20 39.5 17 38.5Z" fill="#2E7D32"/>
+  <path d="M31 38.5C29 35 26 34 24 35.5C26 36.5 28 39.5 31 38.5Z" fill="#2E7D32"/>
+  <circle cx="24" cy="37" r="1.2" fill="#8A6A3D"/>
+</svg>

@@ -1,0 +1,21 @@
+{
+  "short_name": "PashuRaksha",
+  "name": "PashuRaksha — Livestock Health Surveillance Platform",
+  "description": "Digital Livestock Health Surveillance, Offline-First Triage, and Epidemic Early Warning Platform",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "48x48 72x72 96x96 128x128 192x192 256x256 512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#123C2A",
+  "theme_color": "#123C2A",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "hi-IN",
+  "categories": ["government", "health", "agriculture", "veterinary"]
+}
