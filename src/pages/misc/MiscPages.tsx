@@ -1,18 +1,7 @@
 import { Link } from 'react-router-dom'
-import { PlaceholderPage } from '@/components/ui/PlaceholderPage'
 import { AlertCircle, ArrowLeft } from 'lucide-react'
 
-export function SettingsPage() {
-  return (
-    <div className="p-3 sm:p-5 lg:p-6 max-w-6xl mx-auto">
-      <PlaceholderPage
-        title="प्रणाली सेटिंग्स &middot; System Preferences &amp; Profile"
-        description="Configure SMS/Email alert frequencies, language preferences (Hindi, English, Regional), notification radii, and authorized digital signature keys."
-        badge="Platform &mdash; Configuration"
-      />
-    </div>
-  )
-}
+export { SettingsPage } from './SettingsPage'
 
 export function NotFoundPage() {
   return (

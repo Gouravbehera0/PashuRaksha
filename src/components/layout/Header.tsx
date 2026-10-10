@@ -1,5 +1,16 @@
-import { Link, useLocation } from 'react-router-dom'
-import { Bell, Phone, ShieldCheck, ChevronDown } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import {
+  Bell,
+  Phone,
+  ShieldCheck,
+  ChevronDown,
+  LogOut,
+  Settings,
+  AlertTriangle,
+  CheckCircle2,
+  ExternalLink,
+} from 'lucide-react'
 import { Logo } from '@/components/ui/Logo'
 import { SidebarToggle } from '@/components/layout/Sidebar'
 import { useAuth } from '@/hooks/useAuth'
@@ -39,12 +50,38 @@ function getRolePill(role: UserRole | null): { label: string; badgeClass: string
 }
 
 export function Header({ onMenuOpen, notificationCount = 2 }: HeaderProps) {
-  const { user, role } = useAuth()
+  const { user, role, signOut } = useAuth()
   const { t, language, setLanguage } = useTranslation()
   const location = useLocation()
-  const userName = user?.email ?? user?.phone ?? 'Authorized User'
+  const navigate = useNavigate()
+  const userName = user?.email ?? user?.phone ?? 'Authorized Officer'
   const initials = getInitials(userName)
   const roleInfo = getRolePill(role)
+
+  const [notificationsOpen, setNotificationsOpen] = useState(false)
+  const [profileOpen, setProfileOpen] = useState(false)
+  const notifRef = useRef<HTMLDivElement>(null)
+  const profileRef = useRef<HTMLDivElement>(null)
+
+  // Close popovers on click outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
+        setNotificationsOpen(false)
+      }
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setProfileOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const handleSignOut = async () => {
+    setProfileOpen(false)
+    await signOut()
+    navigate('/login', { replace: true })
+  }
 
   const getHeaderLinks = () => {
     switch (role) {
@@ -85,19 +122,22 @@ export function Header({ onMenuOpen, notificationCount = 2 }: HeaderProps) {
 
   const navLinks = getHeaderLinks()
 
+  const alertsPath =
+    role === 'farmer' ? '/farmer/alerts' : role === 'veterinarian' ? '/vet/alerts' : '/admin/outbreaks'
+
   return (
-    <header className="bg-white border-b border-stone-300 z-30 shrink-0 shadow-xs">
+    <header className="bg-white border-b border-stone-300 z-30 shrink-0 shadow-xs relative">
       {/* Top Institutional Utility Strip (GIGW Compliant Style) */}
       <div className="bg-[#123C2A] text-white border-b border-[#1B5E3C] text-[10px] font-sans">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 py-1 flex items-center justify-between gap-2 flex-wrap">
           {/* Left: Authority & Purpose Declaration */}
           <div className="flex items-center gap-2">
             <span className="font-bold tracking-widest uppercase text-[#F7F5EE]">
-              GOVERNMENT-READY LIVESTOCK HEALTH SURVEILLANCE PLATFORM
+              SOVEREIGN LIVESTOCK HEALTH SURVEILLANCE INFRASTRUCTURE
             </span>
             <span className="hidden sm:inline text-white/40">|</span>
             <span className="hidden sm:inline text-white/80 font-mono text-[9px] uppercase tracking-wider bg-white/10 px-1.5 py-0.2 rounded-[2px]">
-              DIGITAL LIVESTOCK HEALTH INFRASTRUCTURE
+              NADRS-II / ICAR COMPLIANT
             </span>
           </div>
 
@@ -109,19 +149,15 @@ export function Header({ onMenuOpen, notificationCount = 2 }: HeaderProps) {
               <span className="font-semibold">EMERGENCY HELPLINE: 1962</span>
             </div>
 
-            {/* Accessibility Size Adjustments */}
-            <div className="hidden md:flex items-center gap-1 text-white/80 font-mono text-[10px] border-l border-white/20 pl-2">
-              <span className="cursor-pointer hover:text-white px-0.5" title="Standard Text">A</span>
-              <span className="cursor-pointer hover:text-white px-0.5 font-bold" title="Larger Text">A+</span>
-            </div>
-
             {/* Language Switch */}
             <div className="flex items-center gap-1.5 border-l border-white/20 pl-2">
               <button
                 type="button"
                 onClick={() => setLanguage('hi')}
                 className={`font-sans text-[11px] transition-colors cursor-pointer ${
-                  language === 'hi' ? 'font-bold text-white underline decoration-[#8BC34A] underline-offset-2' : 'text-white/70 hover:text-white'
+                  language === 'hi'
+                    ? 'font-bold text-white underline decoration-[#8BC34A] underline-offset-2'
+                    : 'text-white/70 hover:text-white'
                 }`}
                 title="Switch to Hindi / हिन्दी में बदलें"
               >
@@ -132,7 +168,9 @@ export function Header({ onMenuOpen, notificationCount = 2 }: HeaderProps) {
                 type="button"
                 onClick={() => setLanguage('en')}
                 className={`font-sans text-[11px] transition-colors cursor-pointer ${
-                  language === 'en' ? 'font-bold text-white underline decoration-[#8BC34A] underline-offset-2' : 'text-white/70 hover:text-white'
+                  language === 'en'
+                    ? 'font-bold text-white underline decoration-[#8BC34A] underline-offset-2'
+                    : 'text-white/70 hover:text-white'
                 }`}
                 title="Switch to English"
               >
@@ -148,7 +186,18 @@ export function Header({ onMenuOpen, notificationCount = 2 }: HeaderProps) {
         {/* Left: Mobile Toggle & Brand Logo */}
         <div className="flex items-center gap-3">
           <SidebarToggle onOpen={onMenuOpen} />
-          <Link to={role === 'farmer' ? '/farmer/dashboard' : role === 'veterinarian' ? '/vet/command-center' : role === 'admin' ? '/admin/dashboard' : '/dashboard'} className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1B5E3C]">
+          <Link
+            to={
+              role === 'farmer'
+                ? '/farmer/dashboard'
+                : role === 'veterinarian'
+                ? '/vet/command-center'
+                : role === 'admin'
+                ? '/admin/dashboard'
+                : '/dashboard'
+            }
+            className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1B5E3C]"
+          >
             <Logo size="md" />
           </Link>
         </div>
@@ -181,39 +230,118 @@ export function Header({ onMenuOpen, notificationCount = 2 }: HeaderProps) {
           {/* Security Seal */}
           <div className="hidden xl:flex items-center gap-1 text-[10px] text-stone-500 font-mono bg-stone-50 border border-stone-200 px-2 py-1 rounded-[2px]">
             <ShieldCheck size={13} className="text-[#1B5E3C]" aria-hidden="true" />
-            <span>NADRS-II SECURE</span>
+            <span>ISO 27001</span>
           </div>
 
-          {/* Notifications */}
-          <button
-            className="relative p-2 text-stone-600 hover:text-[#102A43] hover:bg-stone-100 rounded-[2px] transition-colors border border-stone-200 cursor-pointer focus-visible:outline focus-visible:outline-2"
-            aria-label={`Notifications: ${notificationCount} unread`}
-          >
-            <Bell size={16} />
-            {notificationCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#C62828] text-white text-[9px] font-bold font-mono rounded-full flex items-center justify-center">
-                {notificationCount}
-              </span>
-            )}
-          </button>
-
-          {/* User Profile Block */}
-          <div className="flex items-center gap-2 pl-2 border-l border-stone-200">
-            <div
-              className="w-8 h-8 rounded-[2px] bg-[#123C2A] text-[#F7F5EE] border border-[#8A6A3D]/40 text-xs font-bold font-mono flex items-center justify-center select-none"
-              aria-hidden="true"
+          {/* Notifications Dropdown */}
+          <div className="relative" ref={notifRef}>
+            <button
+              onClick={() => {
+                setNotificationsOpen(!notificationsOpen)
+                setProfileOpen(false)
+              }}
+              className="relative p-2 text-stone-600 hover:text-[#102A43] hover:bg-stone-100 rounded-[2px] transition-colors border border-stone-200 cursor-pointer focus-visible:outline focus-visible:outline-2"
+              aria-label={`Notifications: ${notificationCount} unread`}
             >
-              {initials}
-            </div>
-            <div className="hidden sm:flex flex-col text-left">
-              <span className="text-xs font-bold text-[#102A43] leading-none truncate max-w-[130px]">
-                {userName}
-              </span>
-              <span className={`text-[8px] font-mono font-bold uppercase tracking-wider px-1 py-0.2 rounded-[1px] mt-1 inline-block ${roleInfo.badgeClass}`}>
-                {roleInfo.label}
-              </span>
-            </div>
-            <ChevronDown size={12} className="hidden sm:block text-stone-400" aria-hidden="true" />
+              <Bell size={16} />
+              {notificationCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#C62828] text-white text-[9px] font-bold font-mono rounded-full flex items-center justify-center">
+                  {notificationCount}
+                </span>
+              )}
+            </button>
+
+            {notificationsOpen && (
+              <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white border border-stone-200 rounded-xl shadow-lg z-50 overflow-hidden animate-fadeIn text-xs">
+                <div className="p-3 bg-forest-900 text-white flex items-center justify-between">
+                  <span className="font-bold tracking-wider uppercase text-[11px]">Surveillance Alerts</span>
+                  <span className="bg-white/20 text-[10px] px-2 py-0.5 rounded-full font-mono">2 Active</span>
+                </div>
+                <div className="divide-y divide-stone-100 max-h-72 overflow-y-auto">
+                  <div className="p-3 hover:bg-forest-50/50 transition-colors flex items-start gap-2.5">
+                    <AlertTriangle size={15} className="text-amber-600 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-stone-900">FMD Containment Zone Formed</p>
+                      <p className="text-[11px] text-stone-500 mt-0.5">Bulandshahr / Khurja Block: 5km radius cordon active.</p>
+                      <p className="text-[10px] text-stone-400 mt-1">15 mins ago &bull; High Priority</p>
+                    </div>
+                  </div>
+                  <div className="p-3 hover:bg-forest-50/50 transition-colors flex items-start gap-2.5">
+                    <CheckCircle2 size={15} className="text-forest-600 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-stone-900">Vaccination Drive Completed</p>
+                      <p className="text-[11px] text-stone-500 mt-0.5">Ring-vaccination batch completed in Syana Sector 4.</p>
+                      <p className="text-[10px] text-stone-400 mt-1">2 hours ago</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-2.5 bg-stone-50 border-t border-stone-100 text-center">
+                  <Link
+                    to={alertsPath}
+                    onClick={() => setNotificationsOpen(false)}
+                    className="text-forest-700 hover:text-forest-900 font-bold inline-flex items-center gap-1 text-[11px]"
+                  >
+                    View All Platform Alerts
+                    <ExternalLink size={12} />
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* User Profile Block & Menu */}
+          <div className="relative" ref={profileRef}>
+            <button
+              onClick={() => {
+                setProfileOpen(!profileOpen)
+                setNotificationsOpen(false)
+              }}
+              className="flex items-center gap-2 pl-2 border-l border-stone-200 cursor-pointer focus:outline-none"
+            >
+              <div
+                className="w-8 h-8 rounded-[2px] bg-[#123C2A] text-[#F7F5EE] border border-[#8A6A3D]/40 text-xs font-bold font-mono flex items-center justify-center select-none"
+                aria-hidden="true"
+              >
+                {initials}
+              </div>
+              <div className="hidden sm:flex flex-col text-left">
+                <span className="text-xs font-bold text-[#102A43] leading-none truncate max-w-[130px]">
+                  {userName}
+                </span>
+                <span
+                  className={`text-[8px] font-mono font-bold uppercase tracking-wider px-1 py-0.2 rounded-[1px] mt-1 inline-block ${roleInfo.badgeClass}`}
+                >
+                  {roleInfo.label}
+                </span>
+              </div>
+              <ChevronDown size={12} className="hidden sm:block text-stone-400" aria-hidden="true" />
+            </button>
+
+            {profileOpen && (
+              <div className="absolute right-0 mt-2 w-56 bg-white border border-stone-200 rounded-xl shadow-lg z-50 overflow-hidden animate-fadeIn text-xs">
+                <div className="p-3 bg-stone-50 border-b border-stone-100">
+                  <p className="font-bold text-stone-900 truncate">{userName}</p>
+                  <p className="text-[10px] uppercase font-mono text-forest-700 font-semibold mt-0.5">{roleInfo.label}</p>
+                </div>
+                <div className="p-1.5 space-y-0.5">
+                  <Link
+                    to="/settings"
+                    onClick={() => setProfileOpen(false)}
+                    className="flex items-center gap-2 px-3 py-2 text-stone-700 hover:bg-forest-50 hover:text-forest-900 rounded-lg transition-colors"
+                  >
+                    <Settings size={14} className="text-forest-600" />
+                    <span>Settings & Jurisdiction</span>
+                  </Link>
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-red-700 hover:bg-red-50 rounded-lg transition-colors text-left cursor-pointer"
+                  >
+                    <LogOut size={14} className="text-red-600" />
+                    <span>Sign Out & Lock Desk</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
