@@ -98,9 +98,9 @@ interface LogoProps {
 }
 
 const logoSizes = {
-  sm: { mark: 30, title: 'text-sm tracking-widest', subtitle: 'text-[9px] tracking-wider' },
-  md: { mark: 38, title: 'text-base tracking-widest', subtitle: 'text-[10px] tracking-wider' },
-  lg: { mark: 52, title: 'text-2xl tracking-widest', subtitle: 'text-xs tracking-wider' },
+  sm: { mark: 32, title: 'text-xs sm:text-sm tracking-wider font-black', subtitle: 'text-[8px] sm:text-[9px] tracking-tight font-bold' },
+  md: { mark: 38, title: 'text-base tracking-widest font-black', subtitle: 'text-[10px] tracking-wider font-semibold' },
+  lg: { mark: 52, title: 'text-2xl tracking-widest font-black', subtitle: 'text-xs tracking-wider font-semibold' },
 }
 
 export function Logo({ variant = 'default', size = 'md', className = '' }: LogoProps) {
@@ -109,14 +109,14 @@ export function Logo({ variant = 'default', size = 'md', className = '' }: LogoP
   const subtitleColor = variant === 'white' ? 'text-[#F7F5EE]/80' : 'text-[#1B5E3C]'
 
   return (
-    <div className={`flex items-center gap-3 ${className}`} aria-label="PashuRaksha Platform">
+    <div className={`flex items-center gap-2 sm:gap-3 ${className}`} aria-label="PashuRaksha Platform">
       <LogoMark size={sizes.mark} className="shrink-0 drop-shadow-sm" />
       <div className="flex flex-col leading-tight select-none">
-        <span className={`font-extrabold uppercase font-sans ${sizes.title} ${titleColor}`}>
+        <span className={`uppercase font-sans ${sizes.title} ${titleColor}`}>
           PashuRaksha
         </span>
         {variant !== 'compact' && (
-          <span className={`${sizes.subtitle} ${subtitleColor} font-semibold uppercase font-sans`}>
+          <span className={`${sizes.subtitle} ${subtitleColor} uppercase font-sans line-clamp-2`}>
             Livestock Health Intelligence Platform
           </span>
         )}

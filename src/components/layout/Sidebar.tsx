@@ -300,12 +300,12 @@ export function SidebarToggle({ onOpen }: SidebarToggleProps) {
   return (
     <button
       onClick={onOpen}
-      className="lg:hidden p-1.5 rounded-[2px] text-[#102A43] hover:bg-stone-100 transition-colors border border-stone-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1B5E3C] cursor-pointer"
+      className="lg:hidden p-1 -ml-1 text-[#123C2A] hover:bg-stone-100 rounded-lg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1B5E3C] cursor-pointer"
       aria-label="Open portal navigation"
       aria-expanded={false}
     >
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M3 5h14M3 10h14M3 15h14" strokeLinecap="round" />
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+        <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" />
       </svg>
     </button>
   )

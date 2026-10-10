@@ -13,12 +13,19 @@ import {
   Info,
   Sparkles,
   BarChart3,
-  FileBarChart
+  FileBarChart,
+  AlertTriangle,
+  ChevronRight,
+  ChevronDown,
+  Wifi,
+  Users,
+  Map
 } from 'lucide-react'
 import { getAllAnimals } from '@/services/animalService'
 import { getVetCases } from '@/services/vetService'
 import { getOutbreakClusters } from '@/services/risk/outbreakEngine'
 import { getAllRiskAssessments } from '@/services/risk/riskEngine'
+import { DashboardIntro } from '@/components/dashboard/DashboardIntro'
 import {
   calculateAreaEarlyWarning,
   getRecommendations,
@@ -105,9 +112,241 @@ export function AdminDashboardPage() {
   }
 
   return (
-    <div className="p-3 sm:p-5 lg:p-6 space-y-5 max-w-7xl mx-auto font-sans">
-      {/* 1. Header Banner */}
-      <div className="bg-white border border-stone-300 p-4 rounded-[2px] shadow-xs border-l-4 border-l-[#102A43] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <DashboardIntro
+      role="admin"
+      roleBadge="राज्य पशु रोग निगरानी प्रकोष्ठ · State Epidemiological Surveillance"
+      roleTitle="State Livestock Health Intelligence"
+    >
+      <div className="p-3 sm:p-5 lg:p-6 space-y-5 max-w-7xl mx-auto font-sans">
+      {/* ─── A. MOBILE VIEW (Android / iOS Portrait — Matches Reference Image) ─── */}
+      <div className="block lg:hidden space-y-3.5">
+        {/* Title & Status Row */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold text-[#102A43] tracking-tight font-sans">
+              State Health Intelligence
+            </h1>
+            <div className="flex items-center gap-1.5 text-xs text-stone-600 mt-0.5">
+              <MapPin size={14} className="text-[#1B5E3C] shrink-0 fill-[#1B5E3C]/20" />
+              <span>District Varanasi &middot; State Command Cell</span>
+            </div>
+          </div>
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#EBF5EE] text-[#1B5E3C] text-xs font-semibold border border-[#1B5E3C]/20 shadow-xs">
+              <Wifi size={14} className="text-[#1B5E3C]" />
+              <span>Online</span>
+              <ChevronDown size={13} className="text-[#1B5E3C]" />
+            </div>
+          </div>
+        </div>
+
+        {/* Alert Card 1: Community Outbreak Warning */}
+        <div className="bg-white border border-red-200 rounded-xl p-3.5 shadow-xs flex items-center justify-between gap-3">
+          <div className="flex items-start gap-3 min-w-0">
+            <AlertTriangle size={24} className="text-[#E53935] shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <p className="text-[10px] font-mono font-bold text-[#C62828] uppercase tracking-wider">
+                EPIDEMIOLOGICAL SIGNAL &middot; क्षेत्रीय चेतावनी
+              </p>
+              <h3 className="text-sm font-bold text-[#102A43] mt-0.5 truncate">
+                {possibleOutbreaks[0] ? `${possibleOutbreaks[0].cluster_name} (${possibleOutbreaks[0].affected_villages?.[0] || 'Varanasi'})` : (earlyWarning?.risk_level ? `${earlyWarning.risk_level} Early Warning Alert` : 'District Surveillance Cordon')}
+              </h3>
+              <p className="text-xs text-stone-600 mt-0.5 line-clamp-2">
+                {possibleOutbreaks[0] ? `${possibleOutbreaks[0].case_count} cases detected. Early containment cordon established.` : 'Continuous spatio-temporal cluster surveillance across all Varanasi blocks.'}
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/admin/outbreaks"
+            className="text-[#C62828] p-1 shrink-0 hover:translate-x-0.5 transition-transform"
+            aria-label="View outbreak alerts"
+          >
+            <ChevronRight size={20} />
+          </Link>
+        </div>
+
+        {/* Alert Card 2: Immediate Clinical Triage */}
+        <div className="bg-[#FFF8F7] border border-red-200 rounded-xl p-3.5 shadow-xs flex items-center justify-between gap-3">
+          <div className="space-y-1 min-w-0">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#E53935] animate-pulse shrink-0" />
+              <span className="text-[10px] font-mono font-bold text-[#C62828] uppercase tracking-wider">
+                GIS SURVEILLANCE &middot; स्थानिक निगरानी
+              </span>
+            </div>
+            <h3 className="text-sm font-bold text-[#102A43]">
+              Active disease signals requiring containment?
+            </h3>
+            <p className="text-xs text-stone-600 line-clamp-2">
+              Inspect state GIS surveillance grid, monitor spatio-temporal clusters, and activate containment protocol.
+            </p>
+          </div>
+          <Link
+            to="/admin/surveillance-map"
+            className="bg-[#C62828] hover:bg-[#A81D1D] active:bg-[#7B1818] text-white px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shrink-0 shadow-sm transition-colors cursor-pointer text-center leading-tight uppercase font-sans min-h-[44px]"
+          >
+            <ShieldAlert size={16} className="shrink-0" />
+            <span className="text-[10px] sm:text-[11px] leading-tight text-left">
+              GIS<br />COMMAND
+            </span>
+          </Link>
+        </div>
+
+        {/* Statistics: Row 1 (2 cols) */}
+        <div className="grid grid-cols-2 gap-3">
+          {/* Total Livestock */}
+          <div className="bg-white border border-stone-200 rounded-xl p-3.5 shadow-xs border-t-4 border-t-[#1B5E3C]">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500">
+                TOTAL LIVESTOCK
+              </span>
+              <Activity size={16} className="text-[#1B5E3C]" />
+            </div>
+            <p className="text-2xl font-bold text-[#102A43] font-sans">
+              {loading ? '--' : String(animals.length).padStart(2, '0')}
+            </p>
+            <p className="text-[11px] text-stone-500 mt-0.5">Registered head</p>
+          </div>
+
+          {/* Outbreak Signals */}
+          <div className="bg-white border border-stone-200 rounded-xl p-3.5 shadow-xs border-t-4 border-t-[#C62828]">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500">
+                OUTBREAKS
+              </span>
+              <ShieldAlert size={16} className="text-[#C62828]" />
+            </div>
+            <p className="text-2xl font-bold text-[#C62828] font-sans">
+              {loading ? '--' : String(possibleOutbreaks.length).padStart(2, '0')}
+            </p>
+            <p className="text-[11px] text-stone-500 mt-0.5">Active Signals</p>
+          </div>
+        </div>
+
+        {/* Statistics: Row 2 (3 cols) */}
+        <div className="grid grid-cols-3 gap-2.5">
+          {/* High-Risk Cases */}
+          <div className="bg-white border border-stone-200 rounded-xl p-2.5 sm:p-3 shadow-xs border-t-4 border-t-[#C62828]">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-stone-500 truncate">
+                HIGH RISK
+              </span>
+              <Activity size={13} className="text-[#C62828] shrink-0" />
+            </div>
+            <p className="text-2xl font-bold text-[#C62828] font-sans">
+              {loading ? '--' : String(highRiskCases.length).padStart(2, '0')}
+            </p>
+            <p className="text-[10px] text-stone-500 mt-0.5 truncate">Score &ge; 50</p>
+          </div>
+
+          {/* Vaccines Due */}
+          <div className="bg-white border border-stone-200 rounded-xl p-2.5 sm:p-3 shadow-xs border-t-4 border-t-[#2E7D32]">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-stone-500 truncate">
+                VACCINE DUE
+              </span>
+              <Syringe size={13} className="text-[#2E7D32] shrink-0" />
+            </div>
+            <p className="text-2xl font-bold text-[#2E7D32] font-sans">
+              {loading ? '--' : String(vaccineDueCount).padStart(2, '0')}
+            </p>
+            <p className="text-[10px] text-stone-500 mt-0.5 truncate">Pending Doses</p>
+          </div>
+
+          {/* Active Cases */}
+          <div className="bg-white border border-stone-200 rounded-xl p-2.5 sm:p-3 shadow-xs border-t-4 border-t-[#D97706]">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-stone-500 truncate">
+                ACTIVE CASES
+              </span>
+              <ShieldAlert size={13} className="text-[#D97706] shrink-0" />
+            </div>
+            <p className="text-2xl font-bold text-[#D97706] font-sans">
+              {loading ? '--' : String(activeCases.length).padStart(2, '0')}
+            </p>
+            <p className="text-[10px] text-stone-500 mt-0.5 truncate">Under Triage</p>
+          </div>
+        </div>
+
+        {/* Quick Actions (4-Col Row) */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-bold text-[#102A43]">
+              Quick Actions
+            </h2>
+            <Link
+              to="/admin/analytics"
+              className="text-xs font-semibold text-[#1B5E3C] hover:underline flex items-center gap-1"
+            >
+              <span>View All</span>
+              <ChevronRight size={14} />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-4 gap-2">
+            {/* 1. GIS Map */}
+            <button
+              type="button"
+              onClick={() => window.location.href = '/admin/surveillance-map'}
+              className="bg-white border border-stone-200 rounded-xl p-2 sm:p-2.5 flex flex-col items-center text-center justify-center shadow-xs hover:border-[#1B5E3C] transition-all cursor-pointer group min-h-[90px]"
+            >
+              <div className="w-10 h-10 rounded-xl bg-[#EBF5EE] text-[#1B5E3C] flex items-center justify-center mb-1 group-hover:scale-105 transition-transform">
+                <Map size={20} className="text-[#1B5E3C]" />
+              </div>
+              <span className="text-[11px] font-bold text-[#102A43] leading-tight">
+                GIS<br />Map
+              </span>
+            </button>
+
+            {/* 2. Outbreaks */}
+            <button
+              type="button"
+              onClick={() => window.location.href = '/admin/outbreaks'}
+              className="bg-white border border-stone-200 rounded-xl p-2 sm:p-2.5 flex flex-col items-center text-center justify-center shadow-xs hover:border-[#C62828] transition-all cursor-pointer group min-h-[90px]"
+            >
+              <div className="w-10 h-10 rounded-xl bg-[#FFF0F0] text-[#C62828] flex items-center justify-center mb-1 group-hover:scale-105 transition-transform">
+                <ShieldAlert size={20} className="text-[#C62828]" />
+              </div>
+              <span className="text-[11px] font-bold text-[#102A43] leading-tight">
+                Outbreak<br />Alerts
+              </span>
+            </button>
+
+            {/* 3. Vaccination */}
+            <button
+              type="button"
+              onClick={() => window.location.href = '/admin/vaccination'}
+              className="bg-white border border-stone-200 rounded-xl p-2 sm:p-2.5 flex flex-col items-center text-center justify-center shadow-xs hover:border-[#2E7D32] transition-all cursor-pointer group min-h-[90px]"
+            >
+              <div className="w-10 h-10 rounded-xl bg-[#EBF5EE] text-[#2E7D32] flex items-center justify-center mb-1 group-hover:scale-105 transition-transform">
+                <Syringe size={20} className="text-[#2E7D32]" />
+              </div>
+              <span className="text-[11px] font-bold text-[#102A43] leading-tight">
+                Vaccine<br />Coverage
+              </span>
+            </button>
+
+            {/* 4. Cadre & Users */}
+            <button
+              type="button"
+              onClick={() => window.location.href = '/admin/users'}
+              className="bg-white border border-stone-200 rounded-xl p-2 sm:p-2.5 flex flex-col items-center text-center justify-center shadow-xs hover:border-[#D97706] transition-all cursor-pointer group min-h-[90px]"
+            >
+              <div className="w-10 h-10 rounded-xl bg-[#FFFBEB] text-[#D97706] flex items-center justify-center mb-1 group-hover:scale-105 transition-transform">
+                <Users size={20} className="text-[#D97706]" />
+              </div>
+              <span className="text-[11px] font-bold text-[#102A43] leading-tight">
+                Field<br />Workforce
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ─── B. DESKTOP VIEW (Screens >= lg — Sovereign Epidemiological Console) ─── */}
+      <div className="hidden lg:block space-y-5">
+        {/* 1. Header Banner */}
+        <div className="bg-white border border-stone-300 p-4 rounded-[2px] shadow-xs border-l-4 border-l-[#102A43] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2 mb-1 flex-wrap">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider bg-[#102A43] text-[#F7F5EE] px-2 py-0.5 rounded-[1px]">
@@ -275,6 +514,7 @@ export function AdminDashboardPage() {
           <span className="text-xl font-black text-[#102A43] mt-0.5 block">{cases.length}</span>
           <span className="text-[9px] text-stone-400">LIFETIME</span>
         </div>
+      </div>
       </div>
 
       {/* 4. Intelligent Recommendations (Decision Support Engine) */}
@@ -592,6 +832,7 @@ export function AdminDashboardPage() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </DashboardIntro>
   )
 }

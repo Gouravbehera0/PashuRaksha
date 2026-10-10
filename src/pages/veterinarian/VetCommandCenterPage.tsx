@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import {
   Activity, ShieldAlert, Clock, Folder, RefreshCw,
   Search, ArrowRight, CheckCircle2, FlaskConical, MapPin,
-  Calendar, AlertCircle, Plus, Check, ChevronRight, AlertTriangle
+  Calendar, AlertCircle, Plus, Check, ChevronRight, AlertTriangle,
+  Wifi, ChevronDown
 } from 'lucide-react'
 import { getVetCases, getVetKPIStats } from '@/services/vetService'
 import { getOutbreakClusters } from '@/services/risk/outbreakEngine'
@@ -22,6 +23,7 @@ import {
 import { PriorityBadge } from '@/components/ui/PriorityBadge'
 import { CaseStatusPill } from '@/components/ui/CaseStatusPill'
 import { AnimalIcon } from '@/components/ui/AnimalIcon'
+import { DashboardIntro } from '@/components/dashboard/DashboardIntro'
 import type { VeterinaryCase, VetKPIStats, CaseFollowUp, FollowUpStatus } from '@/types'
 import type { OutbreakCluster, RiskAssessment } from '@/services/risk/riskTypes'
 
@@ -157,9 +159,242 @@ export function VetCommandCenterPage() {
   assessments.forEach((a) => riskMap.set(a.case_id, a))
 
   return (
-    <div className="p-3 sm:p-5 lg:p-6 space-y-5 max-w-7xl mx-auto">
-      {/* 1. Official Header */}
-      <div className="bg-white border border-stone-300 p-4 rounded-[2px] shadow-xs border-l-4 border-l-[#102A43] flex flex-col md:flex-row md:items-center justify-between gap-3">
+    <DashboardIntro
+      role="veterinarian"
+      roleBadge="पशु चिकित्सा नैदानिक कमान केंद्र · Veterinary Clinical Command"
+      roleTitle="Veterinary Command Center"
+    >
+      <div className="p-3 sm:p-5 lg:p-6 space-y-5 max-w-7xl mx-auto">
+      {/* ─── A. MOBILE VIEW (Android / iOS Portrait — Matches Reference Image) ─── */}
+      <div className="block lg:hidden space-y-3.5">
+        {/* Title & Status Row */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold text-[#102A43] tracking-tight font-sans">
+              Veterinary Command Center
+            </h1>
+            <div className="flex items-center gap-1.5 text-xs text-stone-600 mt-0.5">
+              <MapPin size={14} className="text-[#1B5E3C] shrink-0 fill-[#1B5E3C]/20" />
+              <span>Sadar Veterinary Hospital, Varanasi (Zone 4)</span>
+            </div>
+          </div>
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#EBF5EE] text-[#1B5E3C] text-xs font-semibold border border-[#1B5E3C]/20 shadow-xs">
+              <Wifi size={14} className="text-[#1B5E3C]" />
+              <span>Online</span>
+              <ChevronDown size={13} className="text-[#1B5E3C]" />
+            </div>
+          </div>
+        </div>
+
+        {/* Alert Card 1: Community Outbreak Warning */}
+        <div className="bg-white border border-red-200 rounded-xl p-3.5 shadow-xs flex items-center justify-between gap-3">
+          <div className="flex items-start gap-3 min-w-0">
+            <AlertTriangle size={24} className="text-[#E53935] shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <p className="text-[10px] font-mono font-bold text-[#C62828] uppercase tracking-wider">
+                COMMUNITY OUTBREAK WARNING &middot; क्षेत्रीय चेतावनी
+              </p>
+              <h3 className="text-sm font-bold text-[#102A43] mt-0.5 truncate">
+                {activeClusters[0] ? `${activeClusters[0].cluster_name} (${activeClusters[0].affected_villages?.[0] || 'Varanasi'})` : (anomalies[0]?.title || 'Spatio-Temporal Outbreak Alert')}
+              </h3>
+              <p className="text-xs text-stone-600 mt-0.5 line-clamp-2">
+                {activeClusters[0] ? `${activeClusters[0].case_count} cases detected. Early containment cordon established.` : 'Spatio-temporal cluster response active across Varanasi sectors.'}
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/vet/outbreaks"
+            className="text-[#C62828] p-1 shrink-0 hover:translate-x-0.5 transition-transform"
+            aria-label="View outbreak details"
+          >
+            <ChevronRight size={20} />
+          </Link>
+        </div>
+
+        {/* Alert Card 2: Immediate Clinical Triage */}
+        <div className="bg-[#FFF8F7] border border-red-200 rounded-xl p-3.5 shadow-xs flex items-center justify-between gap-3">
+          <div className="space-y-1 min-w-0">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#E53935] animate-pulse shrink-0" />
+              <span className="text-[10px] font-mono font-bold text-[#C62828] uppercase tracking-wider">
+                IMMEDIATE CLINICAL TRIAGE &middot; त्वरित आपातकाल
+              </span>
+            </div>
+            <h3 className="text-sm font-bold text-[#102A43]">
+              Critical cases awaiting clinical review?
+            </h3>
+            <p className="text-xs text-stone-600 line-clamp-2">
+              Review high-urgency patient signals and coordinate Mobile Veterinary Unit (MVU) field dispatch.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate('/vet/cases')}
+            className="bg-[#C62828] hover:bg-[#A81D1D] active:bg-[#7B1818] text-white px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shrink-0 shadow-sm transition-colors cursor-pointer text-center leading-tight uppercase font-sans min-h-[44px]"
+          >
+            <ShieldAlert size={16} className="shrink-0" />
+            <span className="text-[10px] sm:text-[11px] leading-tight text-left">
+              TRIAGE<br />CASES
+            </span>
+          </button>
+        </div>
+
+        {/* Statistics: Row 1 (2 cols) */}
+        <div className="grid grid-cols-2 gap-3">
+          {/* New Cases */}
+          <div className="bg-white border border-stone-200 rounded-xl p-3.5 shadow-xs border-t-4 border-t-[#C62828]">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500">
+                NEW CASES
+              </span>
+              <ShieldAlert size={16} className="text-[#C62828]" />
+            </div>
+            <p className="text-2xl font-bold text-[#C62828] font-sans">
+              {loading ? '--' : String(kpi.new_cases).padStart(2, '0')}
+            </p>
+            <p className="text-[11px] text-stone-500 mt-0.5">Unassigned Triage</p>
+          </div>
+
+          {/* High Priority */}
+          <div className="bg-white border border-stone-200 rounded-xl p-3.5 shadow-xs border-t-4 border-t-[#7B1818]">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500">
+                HIGH PRIORITY
+              </span>
+              <Activity size={16} className="text-[#7B1818]" />
+            </div>
+            <p className="text-2xl font-bold text-[#7B1818] font-sans">
+              {loading ? '--' : String(kpi.high_priority).padStart(2, '0')}
+            </p>
+            <p className="text-[11px] text-stone-500 mt-0.5">Severe Clinical State</p>
+          </div>
+        </div>
+
+        {/* Statistics: Row 2 (3 cols) */}
+        <div className="grid grid-cols-3 gap-2.5">
+          {/* Under Review */}
+          <div className="bg-white border border-stone-200 rounded-xl p-2.5 sm:p-3 shadow-xs border-t-4 border-t-[#E0A11A]">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-stone-500 truncate">
+                UNDER REVIEW
+              </span>
+              <Clock size={13} className="text-[#E0A11A] shrink-0" />
+            </div>
+            <p className="text-2xl font-bold text-[#D97706] font-sans">
+              {loading ? '--' : String(kpi.under_review).padStart(2, '0')}
+            </p>
+            <p className="text-[10px] text-stone-500 mt-0.5 truncate">Clinical Triage</p>
+          </div>
+
+          {/* Lab Pending */}
+          <div className="bg-white border border-stone-200 rounded-xl p-2.5 sm:p-3 shadow-xs border-t-4 border-t-[#102A43]">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-stone-500 truncate">
+                LAB PENDING
+              </span>
+              <FlaskConical size={13} className="text-[#102A43] shrink-0" />
+            </div>
+            <p className="text-2xl font-bold text-[#102A43] font-sans">
+              {loading ? '--' : String(kpi.lab_pending).padStart(2, '0')}
+            </p>
+            <p className="text-[10px] text-stone-500 mt-0.5 truncate">At Lab Desk</p>
+          </div>
+
+          {/* Resolved */}
+          <div className="bg-white border border-stone-200 rounded-xl p-2.5 sm:p-3 shadow-xs border-t-4 border-t-[#2E7D32]">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-stone-500 truncate">
+                RESOLVED
+              </span>
+              <CheckCircle2 size={13} className="text-[#2E7D32] shrink-0" />
+            </div>
+            <p className="text-2xl font-bold text-[#2E7D32] font-sans">
+              {loading ? '--' : String(kpi.cases_resolved).padStart(2, '0')}
+            </p>
+            <p className="text-[10px] text-stone-500 mt-0.5 truncate">Discharged</p>
+          </div>
+        </div>
+
+        {/* Quick Actions (4-Col Row) */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-bold text-[#102A43]">
+              Quick Actions
+            </h2>
+            <Link
+              to="/vet/cases"
+              className="text-xs font-semibold text-[#1B5E3C] hover:underline flex items-center gap-1"
+            >
+              <span>View All</span>
+              <ChevronRight size={14} />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-4 gap-2">
+            {/* 1. Case Triage */}
+            <button
+              type="button"
+              onClick={() => navigate('/vet/cases')}
+              className="bg-white border border-stone-200 rounded-xl p-2 sm:p-2.5 flex flex-col items-center text-center justify-center shadow-xs hover:border-[#1B5E3C] transition-all cursor-pointer group min-h-[90px]"
+            >
+              <div className="w-10 h-10 rounded-xl bg-[#EBF5EE] text-[#1B5E3C] flex items-center justify-center mb-1 group-hover:scale-105 transition-transform">
+                <Folder size={20} className="text-[#1B5E3C]" />
+              </div>
+              <span className="text-[11px] font-bold text-[#102A43] leading-tight">
+                Case<br />Triage
+              </span>
+            </button>
+
+            {/* 2. Lab Desk */}
+            <button
+              type="button"
+              onClick={() => navigate('/vet/lab')}
+              className="bg-white border border-stone-200 rounded-xl p-2 sm:p-2.5 flex flex-col items-center text-center justify-center shadow-xs hover:border-[#102A43] transition-all cursor-pointer group min-h-[90px]"
+            >
+              <div className="w-10 h-10 rounded-xl bg-[#F0F4F8] text-[#102A43] flex items-center justify-center mb-1 group-hover:scale-105 transition-transform">
+                <FlaskConical size={20} className="text-[#102A43]" />
+              </div>
+              <span className="text-[11px] font-bold text-[#102A43] leading-tight">
+                Lab<br />Desk
+              </span>
+            </button>
+
+            {/* 3. Follow-Ups */}
+            <button
+              type="button"
+              onClick={() => setShowScheduleModal(true)}
+              className="bg-white border border-stone-200 rounded-xl p-2 sm:p-2.5 flex flex-col items-center text-center justify-center shadow-xs hover:border-[#E0A11A] transition-all cursor-pointer group min-h-[90px]"
+            >
+              <div className="w-10 h-10 rounded-xl bg-[#FFFBEB] text-[#D97706] flex items-center justify-center mb-1 group-hover:scale-105 transition-transform">
+                <Calendar size={20} className="text-[#D97706]" />
+              </div>
+              <span className="text-[11px] font-bold text-[#102A43] leading-tight">
+                Schedule<br />Follow-Up
+              </span>
+            </button>
+
+            {/* 4. Outbreak Map */}
+            <button
+              type="button"
+              onClick={() => navigate('/vet/surveillance-map')}
+              className="bg-white border border-stone-200 rounded-xl p-2 sm:p-2.5 flex flex-col items-center text-center justify-center shadow-xs hover:border-[#C62828] transition-all cursor-pointer group min-h-[90px]"
+            >
+              <div className="w-10 h-10 rounded-xl bg-[#FFF0F0] text-[#C62828] flex items-center justify-center mb-1 group-hover:scale-105 transition-transform">
+                <MapPin size={20} className="text-[#C62828]" />
+              </div>
+              <span className="text-[11px] font-bold text-[#102A43] leading-tight">
+                GIS<br />Map
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ─── B. DESKTOP VIEW (Screens >= lg — Sovereign Veterinary Command Architecture) ─── */}
+      <div className="hidden lg:block space-y-5">
+        {/* 1. Official Header */}
+        <div className="bg-white border border-stone-300 p-4 rounded-[2px] shadow-xs border-l-4 border-l-[#102A43] flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2 mb-1 flex-wrap">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider bg-[#102A43] text-white px-2 py-0.5 rounded-[1px]">
@@ -461,6 +696,7 @@ export function VetCommandCenterPage() {
           </p>
           <p className="text-[10px] text-stone-500 mt-1 font-sans">Discharged &amp; Closed</p>
         </div>
+      </div>
       </div>
 
       {/* 4. VETERINARY FOLLOW-UP MANAGEMENT (Stage 5 Requirement) */}
@@ -921,6 +1157,7 @@ export function VetCommandCenterPage() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </DashboardIntro>
   )
 }

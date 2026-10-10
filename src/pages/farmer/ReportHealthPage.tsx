@@ -378,7 +378,7 @@ export function ReportHealthPage() {
 
           {/* Section 1: Animal Selection */}
           <div className="bg-white border border-stone-300 p-4 rounded-[2px] shadow-xs space-y-3">
-            <h2 className="text-xs font-bold text-[#102A43] uppercase tracking-wider font-mono border-b border-stone-200 pb-2">
+            <h2 className="text-xs font-bold text-[#102A43] tracking-wide font-sans border-b border-stone-200 pb-2">
               1. {t('health_report.select_animal')}
             </h2>
 
@@ -424,11 +424,11 @@ export function ReportHealthPage() {
           {/* Section 2: Clinical Symptoms Checklist + Voice Recorder */}
           <div className="bg-white border border-stone-300 p-4 rounded-[2px] shadow-xs space-y-4">
             <div className="flex items-center justify-between border-b border-stone-200 pb-2">
-              <h2 className="text-xs font-bold text-[#102A43] uppercase tracking-wider font-mono">
+              <h2 className="text-xs font-bold text-[#102A43] tracking-wide font-sans">
                 2. {t('health_report.select_symptoms')}
               </h2>
               <span className="text-[10px] font-mono text-stone-500">
-                SELECTED: {selectedSymptoms.length}
+                {language === 'hi' ? 'चयनित' : 'SELECTED'}: {selectedSymptoms.length}
               </span>
             </div>
 
@@ -470,7 +470,7 @@ export function ReportHealthPage() {
 
           {/* Section 3: Clinical Severity Level */}
           <div className="bg-white border border-stone-300 p-4 rounded-[2px] shadow-xs space-y-3">
-            <h2 className="text-xs font-bold text-[#102A43] uppercase tracking-wider font-mono border-b border-stone-200 pb-2">
+            <h2 className="text-xs font-bold text-[#102A43] tracking-wide font-sans border-b border-stone-200 pb-2">
               3. {t('health_report.severity')}
             </h2>
 
@@ -492,7 +492,7 @@ export function ReportHealthPage() {
                     onChange={() => setSeverity('Mild')}
                     className="accent-[#2E7D32] w-4 h-4"
                   />
-                  <span className="text-xs font-bold uppercase font-mono">{t('health_report.severity_mild')}</span>
+                  <span className="text-xs font-bold font-sans">{t('health_report.severity_mild')}</span>
                 </div>
                 <p className="text-[11px] text-stone-500 mt-1">
                   Active, eating normally, slight temperature or isolated cough.
@@ -516,7 +516,7 @@ export function ReportHealthPage() {
                     onChange={() => setSeverity('Moderate')}
                     className="accent-[#E0A11A] w-4 h-4"
                   />
-                  <span className="text-xs font-bold uppercase font-mono">{t('health_report.severity_moderate')}</span>
+                  <span className="text-xs font-bold font-sans">{t('health_report.severity_moderate')}</span>
                 </div>
                 <p className="text-[11px] text-stone-500 mt-1">
                   Reduced appetite, clear lameness, drop in milk yield, fever.
@@ -540,7 +540,7 @@ export function ReportHealthPage() {
                     onChange={() => setSeverity('Severe')}
                     className="accent-[#C62828] w-4 h-4"
                   />
-                  <span className="text-xs font-bold uppercase font-mono">{t('health_report.severity_severe')}</span>
+                  <span className="text-xs font-bold font-sans">{t('health_report.severity_severe')}</span>
                 </div>
                 <p className="text-[11px] text-stone-500 mt-1">
                   High fever, unable to stand, lesions in mouth/feet, rapid deterioration.
@@ -551,7 +551,7 @@ export function ReportHealthPage() {
 
           {/* Section 4: Detailed Observations */}
           <div className="bg-white border border-stone-300 p-4 rounded-[2px] shadow-xs space-y-3">
-            <h2 className="text-xs font-bold text-[#102A43] uppercase tracking-wider font-mono border-b border-stone-200 pb-2">
+            <h2 className="text-xs font-bold text-[#102A43] tracking-wide font-sans border-b border-stone-200 pb-2">
               4. {t('health_report.description')}
             </h2>
             <textarea
@@ -566,7 +566,7 @@ export function ReportHealthPage() {
           {/* Section 5: GPS Geolocation & Photograph */}
           <div className="bg-white border border-stone-300 p-4 rounded-[2px] shadow-xs space-y-4">
             <div className="flex items-center justify-between border-b border-stone-200 pb-2">
-              <h2 className="text-xs font-bold text-[#102A43] uppercase tracking-wider font-mono">
+              <h2 className="text-xs font-bold text-[#102A43] tracking-wide font-sans">
                 5. {language === 'hi' ? 'स्थान एवं तस्वीर (कम बैंडविड्थ समर्थित)' : 'LOCATION & PHOTOGRAPHIC EVIDENCE'}
               </h2>
               <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-[1px] ${

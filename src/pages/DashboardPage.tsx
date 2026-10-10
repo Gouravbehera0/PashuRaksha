@@ -1,9 +1,11 @@
 import { Suspense, lazy } from 'react'
-import { AlertTriangle, TrendingUp, Activity, MapPin, ShieldAlert, Radio, FileText, CheckCircle2 } from 'lucide-react'
+import { AlertTriangle, TrendingUp, Activity, MapPin, ShieldAlert, Radio, FileText, CheckCircle2, Wifi, ChevronDown, ChevronRight, Folder } from 'lucide-react'
 import { MetricCard, AlertBanner, RiskBadge, CaseStatusBadge } from '@/components/ui/RiskComponents'
 import { WalkingCowLoading } from '@/components/ui/WalkingCowLoading'
+import { DashboardIntro } from '@/components/dashboard/DashboardIntro'
 import { DEMO_STATS, DEMO_CASES, DEMO_ALERTS } from '@/data/demo'
 import { formatDate } from '@/lib/utils'
+import { Link } from 'react-router-dom'
 
 // Lazy load map to optimize bundle
 const LivestockMap = lazy(() =>
@@ -26,7 +28,204 @@ function BovineVectorIcon() {
 
 export function DashboardPage() {
   return (
-    <div className="p-3 sm:p-5 lg:p-6 space-y-5 max-w-7xl mx-auto">
+    <DashboardIntro
+      role="shared"
+      roleBadge="राष्ट्रीय पशु स्वास्थ्य निगरानी कमान · National Command Center"
+      roleTitle="National Livestock Health Command"
+    >
+      <div className="p-3 sm:p-5 lg:p-6 space-y-5 max-w-7xl mx-auto">
+      {/* ─── A. MOBILE VIEW (Android / iOS Portrait — Matches Reference Image) ─── */}
+      <div className="block lg:hidden space-y-3.5">
+        {/* Title & Status Row */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold text-[#102A43] tracking-tight font-sans">
+              National Command Center
+            </h1>
+            <div className="flex items-center gap-1.5 text-xs text-stone-600 mt-0.5">
+              <MapPin size={14} className="text-[#1B5E3C] shrink-0 fill-[#1B5E3C]/20" />
+              <span>National Livestock Health Surveillance Network</span>
+            </div>
+          </div>
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#EBF5EE] text-[#1B5E3C] text-xs font-semibold border border-[#1B5E3C]/20 shadow-xs">
+              <Wifi size={14} className="text-[#1B5E3C]" />
+              <span>Online</span>
+              <ChevronDown size={13} className="text-[#1B5E3C]" />
+            </div>
+          </div>
+        </div>
+
+        {/* Alert Card 1: Outbreak Warning */}
+        <div className="bg-white border border-red-200 rounded-xl p-3.5 shadow-xs flex items-center justify-between gap-3">
+          <div className="flex items-start gap-3 min-w-0">
+            <AlertTriangle size={24} className="text-[#E53935] shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <p className="text-[10px] font-mono font-bold text-[#C62828] uppercase tracking-wider">
+                COMMUNITY OUTBREAK WARNING &middot; क्षेत्रीय चेतावनी
+              </p>
+              <h3 className="text-sm font-bold text-[#102A43] mt-0.5 truncate">
+                FMD Containment Zone Formed
+              </h3>
+              <p className="text-xs text-stone-600 mt-0.5 line-clamp-2">
+                Bulandshahr / Khurja Block: 5km radius biosecurity ring active.
+              </p>
+            </div>
+          </div>
+          <Link to="/vet/outbreaks" className="text-[#C62828] p-1 shrink-0">
+            <ChevronRight size={20} />
+          </Link>
+        </div>
+
+        {/* Alert Card 2: Immediate Clinical Triage */}
+        <div className="bg-[#FFF8F7] border border-red-200 rounded-xl p-3.5 shadow-xs flex items-center justify-between gap-3">
+          <div className="space-y-1 min-w-0">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#E53935] animate-pulse shrink-0" />
+              <span className="text-[10px] font-mono font-bold text-[#C62828] uppercase tracking-wider">
+                IMMEDIATE CLINICAL TRIAGE &middot; त्वरित आपातकाल
+              </span>
+            </div>
+            <h3 className="text-sm font-bold text-[#102A43]">
+              Active disease signals under investigation
+            </h3>
+            <p className="text-xs text-stone-600 line-clamp-2">
+              National syndromic surveillance network actively evaluating field case clusters.
+            </p>
+          </div>
+          <Link
+            to="/vet/cases"
+            className="bg-[#C62828] hover:bg-[#A81D1D] active:bg-[#7B1818] text-white px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shrink-0 shadow-sm transition-colors cursor-pointer text-center leading-tight uppercase font-sans min-h-[44px]"
+          >
+            <ShieldAlert size={16} className="shrink-0" />
+            <span className="text-[10px] sm:text-[11px] leading-tight text-left">
+              TRIAGE<br />CASES
+            </span>
+          </Link>
+        </div>
+
+        {/* Statistics: Row 1 (2 cols) */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-white border border-stone-200 rounded-xl p-3.5 shadow-xs border-t-4 border-t-[#1B5E3C]">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500 block">
+              TOTAL LIVESTOCK
+            </span>
+            <p className="text-2xl font-bold text-[#102A43] font-sans mt-1">
+              {DEMO_STATS.total_livestock.toLocaleString()}
+            </p>
+            <p className="text-[11px] text-stone-500 mt-0.5">Registered head</p>
+          </div>
+
+          <div className="bg-white border border-stone-200 rounded-xl p-3.5 shadow-xs border-t-4 border-t-[#2E7D32]">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500 block">
+              ACTIVE CASES
+            </span>
+            <p className="text-2xl font-bold text-[#2E7D32] font-sans mt-1">
+              {DEMO_STATS.active_cases.toLocaleString()}
+            </p>
+            <p className="text-[11px] text-stone-500 mt-0.5">Active triage</p>
+          </div>
+        </div>
+
+        {/* Statistics: Row 2 (3 cols) */}
+        <div className="grid grid-cols-3 gap-2.5">
+          <div className="bg-white border border-stone-200 rounded-xl p-2.5 sm:p-3 shadow-xs border-t-4 border-t-[#E0A11A]">
+            <span className="text-[9px] font-bold uppercase tracking-wider text-stone-500 block truncate">
+              OUTBREAKS
+            </span>
+            <p className="text-2xl font-bold text-[#D97706] font-sans mt-1">
+              {DEMO_STATS.possible_outbreaks.toLocaleString()}
+            </p>
+            <p className="text-[10px] text-stone-500 mt-0.5 truncate">Cluster alerts</p>
+          </div>
+
+          <div className="bg-white border border-stone-200 rounded-xl p-2.5 sm:p-3 shadow-xs border-t-4 border-t-[#C62828]">
+            <span className="text-[9px] font-bold uppercase tracking-wider text-stone-500 block truncate">
+              HIGH RISK
+            </span>
+            <p className="text-2xl font-bold text-[#C62828] font-sans mt-1">
+              {DEMO_STATS.high_risk_cases.toLocaleString()}
+            </p>
+            <p className="text-[10px] text-stone-500 mt-0.5 truncate">Critical triage</p>
+          </div>
+
+          <div className="bg-white border border-stone-200 rounded-xl p-2.5 sm:p-3 shadow-xs border-t-4 border-t-[#8A6A3D]">
+            <span className="text-[9px] font-bold uppercase tracking-wider text-stone-500 block truncate">
+              VACCINES DUE
+            </span>
+            <p className="text-2xl font-bold text-[#8A6A3D] font-sans mt-1">
+              {DEMO_STATS.vaccinations_due.toLocaleString()}
+            </p>
+            <p className="text-[10px] text-stone-500 mt-0.5 truncate">Next 14 days</p>
+          </div>
+        </div>
+
+        {/* Quick Actions (4-Col Row) */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-bold text-[#102A43]">
+              Quick Actions
+            </h2>
+            <Link to="/vet/cases" className="text-xs font-semibold text-[#1B5E3C] hover:underline flex items-center gap-1">
+              <span>View All</span>
+              <ChevronRight size={14} />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-4 gap-2">
+            <Link
+              to="/vet/cases"
+              className="bg-white border border-stone-200 rounded-xl p-2 sm:p-2.5 flex flex-col items-center text-center justify-center shadow-xs hover:border-[#1B5E3C] transition-all group min-h-[90px]"
+            >
+              <div className="w-10 h-10 rounded-xl bg-[#EBF5EE] text-[#1B5E3C] flex items-center justify-center mb-1 group-hover:scale-105 transition-transform">
+                <Folder size={20} className="text-[#1B5E3C]" />
+              </div>
+              <span className="text-[11px] font-bold text-[#102A43] leading-tight">
+                Case<br />Queue
+              </span>
+            </Link>
+
+            <Link
+              to="/admin/surveillance-map"
+              className="bg-white border border-stone-200 rounded-xl p-2 sm:p-2.5 flex flex-col items-center text-center justify-center shadow-xs hover:border-[#C62828] transition-all group min-h-[90px]"
+            >
+              <div className="w-10 h-10 rounded-xl bg-[#FFF0F0] text-[#C62828] flex items-center justify-center mb-1 group-hover:scale-105 transition-transform">
+                <MapPin size={20} className="text-[#C62828]" />
+              </div>
+              <span className="text-[11px] font-bold text-[#102A43] leading-tight">
+                GIS<br />Map
+              </span>
+            </Link>
+
+            <Link
+              to="/vet/outbreaks"
+              className="bg-white border border-stone-200 rounded-xl p-2 sm:p-2.5 flex flex-col items-center text-center justify-center shadow-xs hover:border-[#102A43] transition-all group min-h-[90px]"
+            >
+              <div className="w-10 h-10 rounded-xl bg-[#F0F4F8] text-[#102A43] flex items-center justify-center mb-1 group-hover:scale-105 transition-transform">
+                <ShieldAlert size={20} className="text-[#102A43]" />
+              </div>
+              <span className="text-[11px] font-bold text-[#102A43] leading-tight">
+                Outbreak<br />Desk
+              </span>
+            </Link>
+
+            <Link
+              to="/admin/analytics"
+              className="bg-white border border-stone-200 rounded-xl p-2 sm:p-2.5 flex flex-col items-center text-center justify-center shadow-xs hover:border-[#D97706] transition-all group min-h-[90px]"
+            >
+              <div className="w-10 h-10 rounded-xl bg-[#FFFBEB] text-[#D97706] flex items-center justify-center mb-1 group-hover:scale-105 transition-transform">
+                <TrendingUp size={20} className="text-[#D97706]" />
+              </div>
+              <span className="text-[11px] font-bold text-[#102A43] leading-tight">
+                Epidemic<br />Analytics
+              </span>
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* ─── B. DESKTOP VIEW (Screens >= lg) ─── */}
+      <div className="hidden lg:block space-y-5">
       {/* Institutional Command Header */}
       <div className="bg-white border border-stone-300 p-4 rounded-[2px] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3 border-l-4 border-l-[#1B5E3C]">
         <div>
@@ -254,10 +453,12 @@ export function DashboardPage() {
         </span>
       </div>
 
-      {/* Footer Prototype Notice */}
+      {/* Sovereign Platform Notice */}
       <div className="text-center text-[11px] text-stone-500 border-t border-stone-200 pt-3 font-mono">
-        PASHURAKSHA STAGE 1 FOUNDATION &middot; ALL EPIDEMIOLOGICAL STATISTICS ARE DEMONSTRATION SEED VALUES FOR PROTOTYPE VERIFICATION &middot; NOT CONNECTED TO LIVE PRODUCTION DATABASE
+        PASHURAKSHA SOVEREIGN LIVESTOCK SURVEILLANCE &middot; NADRS-II REAL-TIME EPIDEMIOLOGICAL COMMAND NETWORK
       </div>
-    </div>
+      </div>
+      </div>
+    </DashboardIntro>
   )
 }

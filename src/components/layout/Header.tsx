@@ -127,8 +127,8 @@ export function Header({ onMenuOpen, notificationCount = 2 }: HeaderProps) {
 
   return (
     <header className="bg-white border-b border-stone-300 z-30 shrink-0 shadow-xs relative">
-      {/* Top Institutional Utility Strip (GIGW Compliant Style) */}
-      <div className="bg-[#123C2A] text-white border-b border-[#1B5E3C] text-[10px] font-sans">
+      {/* Top Institutional Utility Strip (GIGW Compliant Style) — Desktop Only */}
+      <div className="hidden lg:block bg-[#123C2A] text-white border-b border-[#1B5E3C] text-[10px] font-sans">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 py-1 flex items-center justify-between gap-2 flex-wrap">
           {/* Left: Authority & Purpose Declaration */}
           <div className="flex items-center gap-2">
@@ -182,9 +182,9 @@ export function Header({ onMenuOpen, notificationCount = 2 }: HeaderProps) {
       </div>
 
       {/* Main Institutional Header Bar */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2 flex items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between gap-2 sm:gap-4">
         {/* Left: Mobile Toggle & Brand Logo */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <SidebarToggle onOpen={onMenuOpen} />
           <Link
             to={
@@ -196,9 +196,10 @@ export function Header({ onMenuOpen, notificationCount = 2 }: HeaderProps) {
                 ? '/admin/dashboard'
                 : '/dashboard'
             }
-            className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1B5E3C]"
+            className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1B5E3C] flex items-center"
           >
-            <Logo size="md" />
+            <Logo size="sm" className="flex lg:hidden" />
+            <Logo size="md" className="hidden lg:flex" />
           </Link>
         </div>
 
@@ -223,9 +224,11 @@ export function Header({ onMenuOpen, notificationCount = 2 }: HeaderProps) {
         </nav>
 
         {/* Right: Sync Status Badge, Security Badge, Notification & Profile */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2 sm:gap-2.5">
           {/* Offline Sync Status Badge */}
-          <SyncStatusBadge />
+          <div className="hidden md:flex">
+            <SyncStatusBadge />
+          </div>
 
           {/* Security Seal */}
           <div className="hidden xl:flex items-center gap-1 text-[10px] text-stone-500 font-mono bg-stone-50 border border-stone-200 px-2 py-1 rounded-[2px]">
@@ -234,18 +237,19 @@ export function Header({ onMenuOpen, notificationCount = 2 }: HeaderProps) {
           </div>
 
           {/* Notifications Dropdown */}
+          {/* Notifications Dropdown */}
           <div className="relative" ref={notifRef}>
             <button
               onClick={() => {
                 setNotificationsOpen(!notificationsOpen)
                 setProfileOpen(false)
               }}
-              className="relative p-2 text-stone-600 hover:text-[#102A43] hover:bg-stone-100 rounded-[2px] transition-colors border border-stone-200 cursor-pointer focus-visible:outline focus-visible:outline-2"
+              className="relative p-1.5 sm:p-2 text-stone-700 hover:text-[#102A43] hover:bg-stone-100 rounded-full transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2"
               aria-label={`Notifications: ${notificationCount} unread`}
             >
-              <Bell size={16} />
+              <Bell size={20} />
               {notificationCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#C62828] text-white text-[9px] font-bold font-mono rounded-full flex items-center justify-center">
+                <span className="absolute top-0.5 right-0.5 w-4 h-4 bg-[#E53935] text-white text-[9px] font-bold font-mono rounded-full flex items-center justify-center shadow-xs">
                   {notificationCount}
                 </span>
               )}
@@ -296,15 +300,15 @@ export function Header({ onMenuOpen, notificationCount = 2 }: HeaderProps) {
                 setProfileOpen(!profileOpen)
                 setNotificationsOpen(false)
               }}
-              className="flex items-center gap-2 pl-2 border-l border-stone-200 cursor-pointer focus:outline-none"
+              className="flex items-center gap-1 cursor-pointer focus:outline-none"
             >
               <div
-                className="w-8 h-8 rounded-[2px] bg-[#123C2A] text-[#F7F5EE] border border-[#8A6A3D]/40 text-xs font-bold font-mono flex items-center justify-center select-none"
+                className="w-8 h-8 rounded-full bg-[#123C2A] text-[#F7F5EE] border border-[#8A6A3D]/40 text-xs font-bold font-sans flex items-center justify-center select-none shadow-xs"
                 aria-hidden="true"
               >
                 {initials}
               </div>
-              <div className="hidden sm:flex flex-col text-left">
+              <div className="hidden sm:flex flex-col text-left ml-1">
                 <span className="text-xs font-bold text-[#102A43] leading-none truncate max-w-[130px]">
                   {userName}
                 </span>
@@ -314,7 +318,7 @@ export function Header({ onMenuOpen, notificationCount = 2 }: HeaderProps) {
                   {roleInfo.label}
                 </span>
               </div>
-              <ChevronDown size={12} className="hidden sm:block text-stone-400" aria-hidden="true" />
+              <ChevronDown size={14} className="text-stone-400" aria-hidden="true" />
             </button>
 
             {profileOpen && (
